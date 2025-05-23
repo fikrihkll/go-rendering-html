@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Open App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-itunes-app" content="app-id={{.IosAppId}}, app-argument={{.DeepLink}}">
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            window.location.href = "{{.DeepLink}}";
+            
+            setTimeout(function () {
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+                    if (isIOS) {
+                        window.location.href = "{{.IosStoreUrl}}";
+                    } else {
+                        window.location.href = "{{.AndroidStoreUrl}}";
+                    }
+                } else {
+                    window.location.href = "{{.FallbackURL}}";
+                }
+            }, 500);
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Open this link in the app</h1>
+    <a href="{{.DeepLink}}" class="btn">{{.ButtonText}}</a>
+</body>
+
+</html>

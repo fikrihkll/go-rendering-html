@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: go-deeplink-app
+    env: go
+    buildCommand: go build -o app
+    startCommand: ./app
+    plan: free
+    envVars:
+      - key: PORT
+        value: 3000 

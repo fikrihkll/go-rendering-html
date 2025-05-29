@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
 )
 
-type TemplateData struct {
-	DeepLink        string
-	FallbackURL     string
-	AndroidStoreUrl string
-	IosStoreUrl     string
-	IosAppId        string
-	ButtonText      string
+type InterstitialData struct {
+	IsExternalURL bool
+	ShortLink     string
+	ActualLink    string
+	FallbackURL   string
+	ButtonText    string
+	ButtonLink    string
+	IOSAppID      string
 }
 
 //go:embed interstitial.html
@@ -27,26 +27,72 @@ func handleInterstitial(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := TemplateData{
-		DeepLink:        "https://staging-dynamic-link.pinhome.dev/pinhome-staging/app/project-detail?buildingType=building_type.house&digital_sharing=seeker_link&listingType=property_listing_type.sell&marketType=property_market_type.primary&slug=dqa-rumah-primary-residential&utm_campaign=brokerage_seeker_conversion_engaged_digital_sharing_seeker&utm_medium=Referral&utm_source=consumer_app",
-		FallbackURL:     "https://staging.pinhome.id",
-		AndroidStoreUrl: "https://play.google.com/store/apps/details?id=id.pinhome.consumer",
-		IosStoreUrl:     "https://apps.apple.com/id/app/pinhome-properti-kpr-jasa/id1558641251",
-		IosAppId:        "1558641251",
-		ButtonText:      "Open in App",
+	shortLink := "https://link.fikrihkl.me/consumer-staging/test"
+	fallbackURL := "https://staging.pinhome.id"
+	actualLink := "https://staging-dynamic-link.pinhome.dev/consumer-staging/app/property-detail?digital_sharing=seeker_link&listingType=property_listing_type.sell&slug=dijual-rumah-di-petukangan-utara-33059&utm_campaign=brokerage_seeker_conversion_engaged_digital_sharing_seeker&utm_medium=Referral&utm_source=consumer_app"
+
+	autoLaunched := r.URL.Query().Get("autoLaunch")
+	buttonPressed := r.URL.Query().Get("buttonPressed")
+
+	buttonLink := fmt.Sprintf("%s?autoLaunch=true", shortLink)
+	if autoLaunched == "true" {
+		buttonLink = fmt.Sprintf("%s?autoLaunch=true&buttonPressed=true", shortLink)
+	}
+	if buttonPressed == "true" {
+		buttonLink = fallbackURL
+	}
+
+	data := InterstitialData{
+		ActualLink:    actualLink,
+		FallbackURL:   fallbackURL,
+		ShortLink:     shortLink,
+		IsExternalURL: false,
+		IOSAppID:      "1558641251",
+		ButtonText:    "Open in App",
+		ButtonLink:    buttonLink,
 	}
 
 	tmpl.Execute(w, data)
 }
 
+func handleAssetlinksJson(w http.ResponseWriter, r *http.Request) {
+	assetlinksJson := `
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "id.pinhome.consumer.staging",
+      "sha256_cert_fingerprints": [
+        "AB:05:B5:9D:41:FF:A6:E8:98:F8:5B:4A:60:BB:14:65:3A:5E:C1:D7:F6:5B:62:1B:CA:3E:AA:8C:4B:DA:DC:EF",
+        "90:C3:95:9B:B2:CA:7A:21:70:52:17:B6:98:2E:D4:18:D6:3F:31:D7:31:18:C7:82:E9:2A:3E:3A:33:F1:FA:83"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "id.pinhome.consumer",
+      "sha256_cert_fingerprints": [
+        "58:08:28:3C:FC:DD:06:5B:FB:48:B0:FD:8C:50:50:79:87:B4:26:36:21:E5:B9:00:89:75:17:EC:E8:2A:51:FB",
+        "90:C3:95:9B:B2:CA:7A:21:70:52:17:B6:98:2E:D4:18:D6:3F:31:D7:31:18:C7:82:E9:2A:3E:3A:33:F1:FA:83"
+      ]
+    }
+  }
+]
+	`
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(assetlinksJson))
+}
+
 func main() {
-	http.HandleFunc("/open-app", handleInterstitial)
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
-	}
-
-	fmt.Printf("Server starting on port %s...\n", port)
-	http.ListenAndServe(":"+port, nil)
+	http.HandleFunc("/consumer-staging/test", handleInterstitial)
+	http.HandleFunc("/.well-known/assetlinks.json", handleAssetlinksJson)
+	http.ListenAndServe(":3000", nil)
 }

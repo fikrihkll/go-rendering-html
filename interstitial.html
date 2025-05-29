@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- Interstitial means “in between.” a screen that appears between two other screens or actions. -->
+
 <head>
     <meta charset="UTF-8">
     <title>Open App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-itunes-app" content="app-id={{.IosAppId}}, app-argument={{.DeepLink}}">
     <style>
         body {
             background: #f0f2f5;
@@ -42,29 +43,29 @@
     </style>
     <script>
         window.onload = function () {
-            window.location.href = "{{.DeepLink}}";
-            
-            setTimeout(function () {
-                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                
-                if (isMobile) {
-                    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-                    if (isIOS) {
-                        window.location.href = "{{.IosStoreUrl}}";
-                    } else {
-                        window.location.href = "{{.AndroidStoreUrl}}";
-                    }
-                } else {
-                    window.location.href = "{{.FallbackURL}}";
-                }
-            }, 500);
+            if ("{{.IsExternalURL}}" === 'true') {
+                // window.location.href = "{{.ActualLink}}";
+                // return;
+            }
+
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (!isMobile) {
+                // window.location.href = "{{.FallbackURL}}";
+                // return;
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('autoLaunched') !== 'true' || params.get('buttonPressed') === 'true') {
+                window.location.href = "{{.ButtonLink}}";
+            }
         }
     </script>
 </head>
 
 <body>
     <h1>Open this link in the app</h1>
-    <a href="{{.DeepLink}}" class="btn">{{.ButtonText}}</a>
+    <a href="{{.ButtonLink}}" class="btn">{{.ButtonText}}</a>
 </body>
 
 </html>

@@ -85,6 +85,18 @@ func handleAssetlinksJson(w http.ResponseWriter, r *http.Request) {
         "90:C3:95:9B:B2:CA:7A:21:70:52:17:B6:98:2E:D4:18:D6:3F:31:D7:31:18:C7:82:E9:2A:3E:3A:33:F1:FA:83"
       ]
     }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.prototype_new",
+      "sha256_cert_fingerprints": [
+        "90:C3:95:9B:B2:CA:7A:21:70:52:17:B6:98:2E:D4:18:D6:3F:31:D7:31:18:C7:82:E9:2A:3E:3A:33:F1:FA:83"
+      ]
+    }
   }
 ]
 	`

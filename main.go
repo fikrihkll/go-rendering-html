@@ -28,9 +28,9 @@ func handleInterstitial(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	shortLink := "https://link.fikrihkl.me/consumer-staging/test"
+	shortLink := "https://consumer.pinhome.id/app/owom"
 	fallbackURL := "https://staging.pinhome.id"
-	actualLink := "https://link.fikrihkl.me/consumer-staging/test"
+	actualLink := "https://consumer.pinhome.id/app/owom"
 
 	autoLaunched := r.URL.Query().Get("autoLaunch")
 	buttonPressed := r.URL.Query().Get("buttonPressed")

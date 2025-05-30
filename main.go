@@ -8,13 +8,14 @@ import (
 )
 
 type InterstitialData struct {
-	IsExternalURL bool
-	ShortLink     string
-	ActualLink    string
-	FallbackURL   string
-	ButtonText    string
-	ButtonLink    string
-	IOSAppID      string
+	IsExternalURL  bool
+	ShortLink      string
+	ActualLink     string
+	FallbackURL    string
+	ButtonText     string
+	ButtonLink     string
+	IOSAppID       string
+	AndroidPackage string
 }
 
 //go:embed interstitial.html
@@ -29,7 +30,7 @@ func handleInterstitial(w http.ResponseWriter, r *http.Request) {
 
 	shortLink := "https://link.fikrihkl.me/consumer-staging/test"
 	fallbackURL := "https://staging.pinhome.id"
-	actualLink := "https://staging-dynamic-link.pinhome.dev/consumer-staging/app/property-detail?digital_sharing=seeker_link&listingType=property_listing_type.sell&slug=dijual-rumah-di-petukangan-utara-33059&utm_campaign=brokerage_seeker_conversion_engaged_digital_sharing_seeker&utm_medium=Referral&utm_source=consumer_app"
+	actualLink := "https://link.fikrihkl.me/consumer-staging/test"
 
 	autoLaunched := r.URL.Query().Get("autoLaunch")
 	buttonPressed := r.URL.Query().Get("buttonPressed")
@@ -43,13 +44,14 @@ func handleInterstitial(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := InterstitialData{
-		ActualLink:    actualLink,
-		FallbackURL:   fallbackURL,
-		ShortLink:     shortLink,
-		IsExternalURL: false,
-		IOSAppID:      "1558641251",
-		ButtonText:    "Open in App",
-		ButtonLink:    buttonLink,
+		ActualLink:     actualLink,
+		FallbackURL:    fallbackURL,
+		ShortLink:      shortLink,
+		IsExternalURL:  false,
+		IOSAppID:       "1558641251",
+		AndroidPackage: "id.pinhome.consumer.staging",
+		ButtonText:     "Open in App",
+		ButtonLink:     buttonLink,
 	}
 
 	tmpl.Execute(w, data)

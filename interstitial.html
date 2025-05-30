@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Interstitial means “in between.” a screen that appears between two other screens or actions. -->
+<!-- Interstitial means "in between." a screen that appears between two other screens or actions. -->
 
 <head>
     <meta charset="UTF-8">
@@ -42,22 +42,45 @@
         }
     </style>
     <script>
-        window.onload = function () {
-            if ("{{.IsExternalURL}}" === 'true') {
-                // window.location.href = "{{.ActualLink}}";
-                // return;
-            }
-
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
+        function openApp() {
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const isMobile = isAndroid || isIOS;
+            
             if (!isMobile) {
-                // window.location.href = "{{.FallbackURL}}";
-                // return;
+                window.location.href = "{{.FallbackURL}}";
+                return;
             }
+            
+            if (isAndroid) {
+                // Android intent URL format
+                // intent://host/path#Intent;scheme=customscheme;package=com.example.app;S.browser_fallback_url=fallbackUrl;end
+                const intentUrl = "intent://link.fikrihkl.me/consumer-staging/test" +
+                    "#Intent;scheme=https;package={{.AndroidPackage}};S.browser_fallback_url={{.FallbackURL}};end";
+                
+                window.location.href = intentUrl;
+            } else if (isIOS) {
+                // Try universal links or custom URL scheme for iOS
+                // First try the app
+                const appTimeout = setTimeout(function() {
+                    window.location.href = "{{.FallbackURL}}";
+                }, 2500);
+                
+                window.location.href = "{{.ActualLink}}";
+                
+                window.addEventListener('pagehide', function() {
+                    clearTimeout(appTimeout);
+                });
+            }
+            
+            return false;
+        }
 
+        window.onload = function() {
+            // Try to auto-launch the app when page loads
             const params = new URLSearchParams(window.location.search);
-            if (params.get('autoLaunched') !== 'true' || params.get('buttonPressed') === 'true') {
-                window.location.href = "{{.ButtonLink}}";
+            if (params.get('autoLaunch') === 'true' && params.get('buttonPressed') !== 'true') {
+                openApp();
             }
         }
     </script>
@@ -65,7 +88,7 @@
 
 <body>
     <h1>Open this link in the app</h1>
-    <a href="{{.ButtonLink}}" class="btn">{{.ButtonText}}</a>
+    <a href="#" onclick="return openApp()" class="btn">{{.ButtonText}}</a>
 </body>
 
 </html>

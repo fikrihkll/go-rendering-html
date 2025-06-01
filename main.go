@@ -32,9 +32,9 @@ func handleInterstitial(w http.ResponseWriter, r *http.Request) {
 	// fallbackURL := "https://staging.pinhome.id"
 	// actualLink := "https://consumer.pinhome.id/app/owom"
 
-	shortLink := "https://staging-dynamic-link.pinhome.dev/consumer-staging/p3UJ_Imh-"
+	shortLink := "https://link.fikrihkl.me/consumer-staging/test"
 	fallbackURL := "https://staging.pinhome.id"
-	actualLink := "https://staging-dynamic-link.pinhome.dev/consumer-staging/p3UJ_Imh-"
+	actualLink := "https://link.fikrihkl.me/consumer-staging/test"
 
 	autoLaunched := r.URL.Query().Get("autoLaunch")
 	buttonPressed := r.URL.Query().Get("buttonPressed")

@@ -5,18 +5,13 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-
 type PreviewData struct {
-	IsExternalURL  bool
-	ShortLink      string
-	ActualLink     string
-	FallbackURL    string
-	ButtonText     string
-	ButtonLink     string
-	IOSAppID       string
-	AndroidPackage string
+	RedirectLink string
+	ButtonText   string
 }
 
 //go:embed preview.html
@@ -29,36 +24,23 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	shortLink := "https://link.fikrihkl.me/consumer-staging/test"
-	fallbackURL := "https://staging.pinhome.id"
-	actualLink := "https://link.fikrihkl.me/consumer-staging/test"
-
-	autoLaunched := r.URL.Query().Get("autoLaunch")
-	buttonPressed := r.URL.Query().Get("buttonPressed")
-
-	buttonLink := fmt.Sprintf("%s?autoLaunch=true", shortLink)
-	if autoLaunched == "true" {
-		buttonLink = fmt.Sprintf("%s?autoLaunch=true&buttonPressed=true", shortLink)
-	}
-	if buttonPressed == "true" {
-		buttonLink = fallbackURL
-	}
+	// Extract path variables
+	vars := mux.Vars(r)
+	host := vars["host"]
+	slug := vars["slug"]
+	shortkey := vars["shortkey"]
 
 	data := PreviewData{
-		ActualLink:     actualLink,
-		FallbackURL:    fallbackURL,
-		ShortLink:      shortLink,
-		IsExternalURL:  false,
-		IOSAppID:       "1558641251",
-		AndroidPackage: "id.pinhome.consumer.staging",
-		ButtonText:     "Open in App",
-		ButtonLink:     buttonLink,
+		RedirectLink: fmt.Sprintf("https://%s/%s/%s", host, slug, shortkey),
+		ButtonText:   "Open in App",
 	}
 
 	tmpl.Execute(w, data)
 }
 
 func main() {
-	http.HandleFunc("/preview", handlePreview)
-	http.ListenAndServe(":4000", nil)
+	r := mux.NewRouter()
+	r.HandleFunc("/preview/{host}/{slug}/{shortkey}", handlePreview)
+
+	http.ListenAndServe(":4000", r)
 }

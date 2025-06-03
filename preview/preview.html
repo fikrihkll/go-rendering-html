@@ -41,32 +41,12 @@
             background-color: #0056b3;
         }
     </style>
-    <script>
-        window.onload = function () {
-            if ("{{.IsExternalURL}}" === 'true') {
-                // window.location.href = "{{.ActualLink}}";
-                // return;
-            }
-
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-            if (!isMobile) {
-                // window.location.href = "{{.FallbackURL}}";
-                // return;
-            }
-
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('autoLaunch') !== 'true' || params.get('buttonPressed') === 'true') {
-                window.location.href = "{{.ButtonLink}}";
-            }
-        }
-    </script>
 </head>
 
 <body>
     <h1>Open this link in the app</h1>
     <h3>Preview</h3>
-    <a href="{{.ButtonLink}}" class="btn">{{.ButtonText}}</a>
+    <a href="{{.RedirectLink}}" class="btn">{{.ButtonText}}</a>
 </body>
 
 </html>

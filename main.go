@@ -1,9 +1,6 @@
 package main
 
 import (
-	"embed"
-	"fmt"
-	"html/template"
 	"net/http"
 )
 
@@ -18,47 +15,41 @@ type InterstitialData struct {
 	AndroidPackage string
 }
 
-//go:embed interstitial.html
-var content embed.FS
-
 func handleInterstitial(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFS(content, "interstitial.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	// shortLink := "https://consumer.pinhome.id/app/owom"
 	// fallbackURL := "https://staging.pinhome.id"
 	// actualLink := "https://consumer.pinhome.id/app/owom"
 
-	shortLink := "https://preview-link.fikrihkl.me/consumer-staging/test"
-	fallbackURL := "https://staging.pinhome.id"
-	actualLink := "https://preview-link.fikrihkl.me/consumer-staging/test"
+	// shortLink := "https://preview-link.fikrihkl.me/preview"
+	// fallbackURL := "https://staging.pinhome.id"
+	// actualLink := "https://preview-link.fikrihkl.me/preview"
 
-	autoLaunched := r.URL.Query().Get("autoLaunch")
+	shortLink := "https://preview-link.fikrihkl.me/preview/link.fikrihkl.me/consumer-staging/test"
+	fallbackURL := "https://pinhome.id"
+	actualLink := "https://google.com"
+
 	buttonPressed := r.URL.Query().Get("buttonPressed")
 
-	buttonLink := fmt.Sprintf("%s?autoLaunch=true", shortLink)
-	if autoLaunched == "true" {
-		buttonLink = fmt.Sprintf("%s?autoLaunch=true&buttonPressed=true", shortLink)
+	isMobile := false
+	isExternalURL := false
+
+	if isExternalURL {
+		http.Redirect(w, r, actualLink, http.StatusFound)
+		return
 	}
+
+	if isMobile {
+		http.Redirect(w, r, fallbackURL, http.StatusFound)
+		return
+	}
+
 	if buttonPressed == "true" {
-		buttonLink = fallbackURL
+		http.Redirect(w, r, fallbackURL, http.StatusFound)
+		return
+	} else {
+		http.Redirect(w, r, shortLink, http.StatusFound)
+		return
 	}
-
-	data := InterstitialData{
-		ActualLink:     actualLink,
-		FallbackURL:    fallbackURL,
-		ShortLink:      shortLink,
-		IsExternalURL:  false,
-		IOSAppID:       "1558641251",
-		AndroidPackage: "id.pinhome.consumer.staging",
-		ButtonText:     "Open in App",
-		ButtonLink:     buttonLink,
-	}
-
-	tmpl.Execute(w, data)
 }
 
 func handleAssetlinksJson(w http.ResponseWriter, r *http.Request) {
@@ -112,5 +103,6 @@ func handleAssetlinksJson(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/consumer-staging/test", handleInterstitial)
 	http.HandleFunc("/.well-known/assetlinks.json", handleAssetlinksJson)
+	http.HandleFunc("/app/preview", handleInterstitial)
 	http.ListenAndServe(":3000", nil)
 }

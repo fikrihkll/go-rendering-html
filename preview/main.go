@@ -31,7 +31,7 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 	shortkey := vars["shortkey"]
 
 	data := PreviewData{
-		RedirectLink: fmt.Sprintf("https://%s/%s/%s", host, slug, shortkey),
+		RedirectLink: fmt.Sprintf("https://%s/%s/%s?buttonPressed=true", host, slug, shortkey),
 		ButtonText:   "Open in App",
 	}
 

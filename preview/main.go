@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"fmt"
+	// "fmt"
 	"html/template"
 	"net/http"
 
@@ -25,13 +25,14 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract path variables
-	vars := mux.Vars(r)
-	host := vars["host"]
-	slug := vars["slug"]
-	shortkey := vars["shortkey"]
+	// vars := mux.Vars(r)
+	// host := vars["host"]
+	// slug := vars["slug"]
+	// shortkey := vars["shortkey"]
+	// fmt.Sprintf("https://%s/%s/%s?buttonPressed=true", host, slug, shortkey)
 
 	data := PreviewData{
-		RedirectLink: fmt.Sprintf("https://%s/%s/%s?buttonPressed=true", host, slug, shortkey),
+		RedirectLink: "https://staging-dynamic-link.pinhome.dev/consumer-staging/cYst1JQhk",
 		ButtonText:   "Open in App",
 	}
 

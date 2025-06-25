@@ -32,7 +32,7 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 	// fmt.Sprintf("https://%s/%s/%s?buttonPressed=true", host, slug, shortkey)
 
 	data := PreviewData{
-		RedirectLink: "https://staging-consumer.pinhome.id/app/2Z8Z",
+		RedirectLink: "https://staging-dynamic-link.pinhome.dev/consumer-staging/cYst1JQhk",
 		ButtonText:   "Open in App",
 	}
 

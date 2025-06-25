@@ -41,59 +41,59 @@
             background-color: #0056b3;
         }
     </style>
-    
+
     <script>
         // JavaScript onLoad script
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log('Preview page loaded successfully');
-            
+
             try {
                 // Initialize page functionality
                 initializePage();
-                
+
                 // Add click event listener to the button
                 const button = document.querySelector('.btn');
                 if (button) {
-                    button.addEventListener('click', function(e) {
+                    button.addEventListener('click', function (e) {
                         console.log('Button clicked, redirecting to:', this.href);
                         // You can add analytics tracking here
                         trackButtonClick();
                     });
                 }
-                
+
                 // Log page load analytics
                 trackPageLoad();
-                
+
             } catch (error) {
                 console.error('Error during page initialization:', error);
             }
         });
-        
+
         function initializePage() {
             // Page initialization logic
             console.log('Loading dynamic link...');
             const redirectLink = "{{.RedirectLink}}";
             // Add 3 second delay before redirecting
-            setTimeout(function() {
+            setTimeout(function () {
                 console.log('3 second delay completed, redirecting to:', redirectLink);
-                window.location.href = redirectLink;
+                document.getElementById('redirect-btn').click();
             }, 3000);
         }
-        
+
         function trackButtonClick() {
             // Analytics tracking for button clicks
             console.log('Button click tracked');
             // Add your analytics code here (e.g., Google Analytics, custom tracking)
         }
-        
+
         function trackPageLoad() {
             // Analytics tracking for page loads
             console.log('Page load tracked');
             // Add your analytics code here (e.g., Google Analytics, custom tracking)
         }
-        
+
         // Additional window load event for resources like images
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             console.log('All page resources loaded');
         });
     </script>
@@ -102,7 +102,7 @@
 <body>
     <h1>Open this link in the app</h1>
     <h3>Preview</h3>
-    <a href="{{.RedirectLink}}" class="btn">{{.ButtonText}}</a>
+    <a id="redirect-btn" href="{{.RedirectLink}}" class="btn">{{.ButtonText}}</a>
 </body>
 
 </html>

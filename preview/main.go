@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	// "fmt"
 	"html/template"
 	"net/http"
 
@@ -31,8 +30,20 @@ func handlePreview(w http.ResponseWriter, r *http.Request) {
 	// shortkey := vars["shortkey"]
 	// fmt.Sprintf("https://%s/%s/%s?buttonPressed=true", host, slug, shortkey)
 
+	// Get query parameters from the request
+	
+	queryParams := r.URL.Query()
+	
+	fdl := queryParams.Get("fdl")
+	var redirectLink string
+	if fdl == "true" {
+		redirectLink = "https://staging-consumer.pinhome.id/app/zA15"
+	} else {
+		redirectLink = "https://staging-dynamic-link.pinhome.dev/consumer-staging/cYst1JQhk"
+	}
+
 	data := PreviewData{
-		RedirectLink: "https://staging-dynamic-link.pinhome.dev/consumer-staging/cYst1JQhk",
+		RedirectLink: redirectLink,
 		ButtonText:   "Open in App",
 	}
 
